@@ -7,13 +7,14 @@ import os
 
 startup_message = start_up()
 
+
 class password_manager:
     def __init__(self):
         self.key = None
         self.master_password = None
         self.password_file = None
         self.password_dict = {}
-        self.entry_id_counter = 1 
+        self.entry_id_counter = 1
 
     def create_key(self, path):
         self.key_file_path = path  # Store the key file path
@@ -24,7 +25,8 @@ class password_manager:
         self.encrypt_and_save_master_password(path)
 
     def encrypt_and_save_master_password(self, path):
-        encrypted_master_password = Fernet(self.key).encrypt(self.master_password.encode()).decode()
+        encrypted_master_password = Fernet(self.key).encrypt(
+            self.master_password.encode()).decode()
         with open(f"{path}.master", 'w') as f:
             json.dump({"master_password": encrypted_master_password}, f)
 
@@ -39,7 +41,8 @@ class password_manager:
         self.master_password = self.get_master_password(path)
         if self.master_password is None:
             return
-        entered_password = input("Enter master password for this key: ")
+        entered_password = input(
+            "Enter master password for this key: ")
         if entered_password != self.master_password:
             print("Incorrect master password. Access denied.")
             self.key = None
@@ -60,14 +63,16 @@ class password_manager:
 
     def create_password_file(self, path, initial_values=None):
         if self.key is None:
-            print("You need to load an existing key or create a new one before creating a password file.")
+            print(
+                "You need to load an existing key or create a new one before creating a password file.")
             return
-        
+
         self.password_file = path
 
         if initial_values is not None:
             for key, values in initial_values.items():
-                self.add_password(key, values["username"], values["password"])
+                self.add_password(
+                    key, values["username"], values["password"])
 
         # Create the password file
         with open(path, 'w') as f:
@@ -79,25 +84,30 @@ class password_manager:
                 for line in f:
                     site, username, encrypted = line.split(":")
                     try:
-                        decrypted_password = Fernet(self.key).decrypt(encrypted.encode()).decode()
-                        self.password_dict[self.entry_id_counter] = {"site": site, "username": username, "password": decrypted_password}
+                        decrypted_password = Fernet(
+                            self.key).decrypt(encrypted.encode()).decode()
+                        self.password_dict[self.entry_id_counter] = {
+                            "site": site, "username": username, "password": decrypted_password}
                         self.entry_id_counter += 1  # Increment the entry ID counter
                     except InvalidToken:
-                        print("This key isn't for this file. Please check the key and try again.")
+                        print(
+                            "This key isn't for this file. Please check the key and try again.")
                         self.password_file = None
                         self.password_dict = {}
                         self.entry_id_counter = 1  # Reset the entry ID counter
                         break
         except FileNotFoundError:
-            print("Invalid password file name. Please check the path and try again.")
+            print(
+                "Invalid password file name. Please check the path and try again.")
             return
-        
+
     def add_password(self, site, username, password):
         if self.password_file is None:
             print("You need to create a password file before adding passwords.")
             return
-        
-        self.password_dict[self.entry_id_counter] = {"site": site, "username": username, "password": password}
+
+        self.password_dict[self.entry_id_counter] = {
+            "site": site, "username": username, "password": password}
         self.entry_id_counter += 1  # Increment the entry ID counter
 
         if self.key is not None:
@@ -123,20 +133,23 @@ class password_manager:
                 self.password_dict[entry_id]["password"] = password
             print(f"Entry with ID {entry_id} edited successfully.")
         else:
-            print(f"No entry found with ID {entry_id}. Returning to main menu.")
+            print(
+                f"No entry found with ID {entry_id}. Returning to main menu.")
             return False
         return True
 
     def get_all_passwords(self):
         return self.password_dict
-    
+
     def delete_all_entries(self):
-        entered_password = input("Enter master password to delete all entries and associated files: ")
+        entered_password = input(
+            "Enter master password to delete all entries and associated files: ")
         if entered_password != self.master_password:
             print("Incorrect master password. Access denied.")
             return
 
-        confirm = input("Are you sure? This action cannot be undone. (yes/no): ")
+        confirm = input(
+            "Are you sure? This action cannot be undone. (yes/no): ")
         if confirm.lower() == "yes":
             if self.password_file:
                 os.remove(self.password_file)
@@ -160,6 +173,7 @@ class password_manager:
         else:
             print(f"No entry found with ID {entry_id}.")
 
+
 # Table for prettier output
 def print_table(headers, data):
     max_widths = [len(header) for header in headers]
@@ -172,21 +186,26 @@ def print_table(headers, data):
             max_widths[i] = max(max_widths[i], value_length)
 
     # Headers for print table
-    header_line = " | ".join(f"{header:<{max_widths[i]}}" for i, header in enumerate(headers))
+    header_line = " | ".join(
+        f"{header:<{max_widths[i]}}" for i, header in enumerate(headers))
     print(header_line)
     print("-" * len(header_line))
 
     # Print data
     for row in data:
-        row_line = " | ".join(f"{value:<{max_widths[i]}}" for i, value in enumerate(row))
+        row_line = " | ".join(
+            f"{value:<{max_widths[i]}}" for i, value in enumerate(row))
         print(row_line + '\n')
+
 
 def save_password_file(password_manager):
     if password_manager.password_file:
         with open(password_manager.password_file, 'w') as f:
-            for credentials in password_manager.password_dict.items():  # Change here
-                encrypted = Fernet(password_manager.key).encrypt(credentials["password"].encode()).decode()  # Change here
-                f.write(f"{credentials['site']}:{credentials['username']}:{encrypted}\n")
+            for entry_id, credentials in password_manager.password_dict.items():
+                encrypted = Fernet(
+                    password_manager.key).encrypt(credentials["password"].encode()).decode()
+                f.write(
+                    f"{credentials['site']}:{credentials['username']}:{encrypted}\n")
     if password_manager.password_file:  # Add this condition
         os.remove(password_manager.password_file)  # Add this line
 
@@ -208,6 +227,7 @@ def print_menu():
     m. Show this menu
     q. quit
 """)
+
 
 def main():
     password = {}
@@ -240,18 +260,23 @@ def main():
             passwords = pm.get_all_passwords()
             if passwords:
                 print("All passwords:")
-                print_table(["ID    ", "Website               ", "Username                 ", "Password             "], 
-                            [[entry_id, credentials['site'], credentials['username'], credentials['password']] for entry_id, credentials in passwords.items()])
+                print_table(["ID    ", "Website               ",
+                            "Username                 ", "Password             "],
+                           [[entry_id, credentials['site'], credentials['username'], credentials['password']] for entry_id, credentials in passwords.items()])
             else:
                 print("No passwords stored.")
         elif choice == 'd':
             entry_id = int(input('Enter the ID of the password to delete: '))
             pm.delete_password(entry_id)
         elif choice == 'e':
-            entry_id = int(input('Enter the ID of the password to edit: '))
-            site = input('Enter the site (leave blank to keep current): ')
-            username = input('Enter the username (leave blank to keep current): ')
-            password = input('Enter the password (leave blank to keep current): ')
+            entry_id = int(
+                input('Enter the ID of the password to edit: '))
+            site = input(
+                'Enter the site (leave blank to keep current): ')
+            username = input(
+                'Enter the username (leave blank to keep current): ')
+            password = input(
+                'Enter the password (leave blank to keep current): ')
             if not pm.edit_password(entry_id, site, username, password):
                 continue  # Return to main menu if entry doesn't exist
         elif choice == 'n':
@@ -267,13 +292,25 @@ def main():
                 print("All passwords:")
                 print_table(["ID    ", "Website               ", "Username                 ", "Password             "], 
                             [[entry_id, credentials['site'], credentials['username'], credentials['password']] for entry_id, credentials in passwords.items()])
-                entry_id = int(input("Enter the ID of the password you want to replace with the generated password: "))
-                pm.edit_password(entry_id, password=generated_password)
+                while True:
+                    entry_id_input = input("Enter the ID of the password you want to replace with the generated password (or 'b' to go back): ")
+                    if entry_id_input.lower() == 'b':
+                        break  # Go back to main menu
+                    try:
+                        entry_id = int(entry_id_input)
+                        if entry_id in passwords:
+                            pm.edit_password(entry_id, password=generated_password)
+                            break
+                        else:
+                            print(f"No password found with ID {entry_id}. Please try again.")
+                    except ValueError:
+                        print("Invalid input. Please enter a valid ID or 'b' to go back.")
             else:
                 print("No passwords stored.")
 
         elif choice == 'c':  # Copy a password to clipboard
-            entry_id = int(input('Enter the ID of the password to copy: '))
+            entry_id = int(
+                input('Enter the ID of the password to copy: '))
             pm.copy_password(entry_id)
         elif choice == 'm':  # Show menu again
             print_menu()
@@ -286,6 +323,7 @@ def main():
 
     # Save the password file before exiting
     save_password_file(pm)
+
 
 if __name__ == "__main__":
     main()
