@@ -229,7 +229,6 @@ def print_menu():
 def main():
     password = {}
     pm = password_manager()
-    start_up()
     print_menu()  # Print the menu initially
     done = False
     while not done:
