@@ -204,8 +204,7 @@ def save_password_file(password_manager):
                     password_manager.key).encrypt(credentials["password"].encode()).decode()
                 f.write(
                     f"{credentials['site']}:{credentials['username']}:{encrypted}\n")
-    if password_manager.password_file:  # Add this condition
-        os.remove(password_manager.password_file)  # Add this line
+
 
 
 def print_menu():
