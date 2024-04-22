@@ -6,11 +6,13 @@ There are various options; you can generate a password, copy a password to your 
 
 # Usage
 
-1. Run the program
-2. Create a key by pressing '1'. End the file name with '.key'
-3. Load the key by pressing '2'. You will be prompted for the master password you just created. Remember to include '.key' at the end.
-4. Create a new password file by pressing '3'. It doesn't need an extension, but it will need one when you load the key if you decide to give it one. This program supports .txt and .json files
-5. Load the password file you just created by pressing '4'. Type in the name of the file, followed by any extensions if you gave it one
+1. Download the ZIP file
+2. Extract the ZIP file
+3. Run the 'password protector.py' file
+4. Create a key by pressing '1'. End the file name with '.key'
+5. Load the key by pressing '2'. You will be prompted for the master password you just created. Remember to include '.key' at the end.
+6. Create a new password file by pressing '3'. It doesn't need an extension, but it will need one when you load the key if you decide to give it one. This program supports .txt and .json files
+7. Load the password file you just created by pressing '4'. Type in the name of the file, followed by any extensions if you gave it one
 
 ![1](https://github.com/dgtlcrmnl/passprotector/assets/20742525/52e4fb0f-c73d-41b7-88e9-bef934f724f2)
 ![2](https://github.com/dgtlcrmnl/passprotector/assets/20742525/1338064b-2991-4b51-8449-32b3ae154786)
