@@ -5,8 +5,6 @@ from cryptography.fernet import Fernet, InvalidToken
 from ascii_art import start_up
 import os
 
-startup_message = start_up()
-
 
 class password_manager:
     def __init__(self):
@@ -211,7 +209,7 @@ def save_password_file(password_manager):
 
 
 def print_menu():
-    startup_message
+    start_up()
     print(""" What do you want to do?
     1. Create a new key (save as .key)
     2. Load an existing key (specify name including file extension)
@@ -232,7 +230,7 @@ def print_menu():
 def main():
     password = {}
     pm = password_manager()
-    startup_message
+    start_up()
     print_menu()  # Print the menu initially
     done = False
     while not done:
